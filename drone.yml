@@ -7,7 +7,7 @@ steps:
   image: docker.io/golang:1.15-alpine
   commands:
     - mkdir build
-    - go build -o build/ .
+    - go build -v -o build/ .
 
 - name: build and push docker image
   image: plugins/docker
