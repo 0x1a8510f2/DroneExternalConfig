@@ -1,6 +1,6 @@
 FROM alpine:latest
 
-COPY build/DroneExternalConfig /usr/bin/
+COPY build/* /usr/bin/
 
 VOLUME /config
 WORKDIR /config
