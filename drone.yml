@@ -1,0 +1,20 @@
+kind: pipeline
+type: docker
+name: default
+
+steps:
+- name: build binaries
+  image: docker.io/golang:1.15-alpine
+  commands:
+    - mkdir build
+    - go build -o build/ .
+
+- name: build and push docker image
+  image: plugins/docker
+  settings:
+    username:
+      from_secret: DOCKER_USER
+    password:
+      from_secret: DOCKER_TOKEN
+    repo: trslimey/DroneExternalConfig
+    auto_tag: true
