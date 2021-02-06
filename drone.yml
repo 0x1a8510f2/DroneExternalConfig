@@ -21,3 +21,15 @@ steps:
     repo: trslimey/drone-external-config
     tags:
       - amd64
+
+- name: build and push arm64 docker image
+  image: plugins/docker:linux-arm64
+  settings:
+    username:
+      from_secret: DOCKER_USER
+    password:
+      from_secret: DOCKER_TOKEN
+    dockerfile: ./Dockerfile.linux-arm64
+    repo: trslimey/drone-external-config
+    tags:
+      - arm64
