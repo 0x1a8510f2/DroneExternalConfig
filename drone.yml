@@ -12,7 +12,6 @@ steps:
 
 - name: build and push amd64 docker image
   image: plugins/docker:linux-amd64
-  detach: true
   settings:
     username:
       from_secret: DOCKER_USER
@@ -22,10 +21,11 @@ steps:
     repo: trslimey/drone-external-config
     tags:
       - amd64
+  depends_on:
+    - build binaries
 
 - name: build and push arm64 docker image
   image: plugins/docker:linux-arm64
-  detach: true
   settings:
     username:
       from_secret: DOCKER_USER
@@ -35,6 +35,8 @@ steps:
     repo: trslimey/drone-external-config
     tags:
       - arm64
+  depends_on:
+    - build binaries
   # Temporary breakpoint
   commands:
     - sleep 50000
