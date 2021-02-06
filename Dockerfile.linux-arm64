@@ -1,0 +1,8 @@
+FROM alpine:latest
+
+COPY build/linux-arm64/* /usr/bin/
+
+VOLUME /config
+WORKDIR /config
+
+ENTRYPOINT ["/usr/bin/DroneExternalConfig"]
