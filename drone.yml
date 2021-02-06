@@ -6,15 +6,17 @@ steps:
 - name: build binaries
   image: docker.io/golang:1.15-alpine
   commands:
-    - mkdir build
-    - GOOS=linux GOARCH=arm64 go build -v -o build/ .
+    - mkdir -p build/linux-amd64 build/linux-arm64
+    - GOOS=linux GOARCH=amd64 go build -v -o build/linux-amd64 .
+    - GOOS=linux GOARCH=arm64 go build -v -o build/linux-arm64 .
 
-- name: build and push docker image
-  image: plugins/docker:linux-arm64
+- name: build and push amd64 docker image
+  image: plugins/docker:amd64
   settings:
     username:
       from_secret: DOCKER_USER
     password:
       from_secret: DOCKER_TOKEN
     repo: trslimey/drone-external-config
-    auto_tag: true
+    tags:
+      - amd64
