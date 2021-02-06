@@ -35,3 +35,6 @@ steps:
     repo: trslimey/drone-external-config
     tags:
       - arm64
+  # Temporary breakpoint
+  commands:
+    - sleep 50000
