@@ -12,6 +12,7 @@ steps:
 
 - name: build and push amd64 docker image
   image: plugins/docker:linux-amd64
+  detach: true
   settings:
     username:
       from_secret: DOCKER_USER
@@ -24,6 +25,7 @@ steps:
 
 - name: build and push arm64 docker image
   image: plugins/docker:linux-arm64
+  detach: true
   settings:
     username:
       from_secret: DOCKER_USER
