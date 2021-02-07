@@ -1,0 +1,6 @@
+# github.com/galdor/go-cmdline v1.1.1
+## explicit
+github.com/galdor/go-cmdline
+# github.com/vaughan0/go-ini v0.0.0-20130923145212-a98ad7ee00ec
+## explicit
+github.com/vaughan0/go-ini
