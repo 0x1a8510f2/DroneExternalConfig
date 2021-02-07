@@ -115,6 +115,8 @@ func reqHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	fmt.Printf("%s\n", reqBody)
+
 	// Try to unmarshal reqeust body
 	data := droneRequest{}
 	err = json.Unmarshal(reqBody, &data)
@@ -124,8 +126,6 @@ func reqHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(respStatusCode)
 		return
 	}
-
-	fmt.Printf("%v\n", data)
 }
 
 func main() {
