@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -17,8 +18,114 @@ var (
 	exitChan chan struct{}
 )
 
-func reqHandler(w http.ResponseWriter, r *http.Request) {
+type Repo struct {
+	Id             int64
+	Uid            int64
+	User_id        int64
+	Namespace      string
+	Name           string
+	Slug           string
+	Scm            string
+	Git_http_url   string
+	Git_ssh_url    string
+	Link           string
+	Default_branch string
+	Private        bool
+	Visibility     string
+	Active         bool
+	Config         string
+	Trusted        bool
+	Protected      bool
+	Ignore_forks   bool
+	Ignore_pulls   bool
+	Cancel_pulls   bool
+	Timeout        int64
+	Counter        int64
+	Synced         int64
+	Created        int64
+	Updated        int64
+	Version        int64
+}
 
+type Build struct {
+	Id            int64
+	Repo_id       int64
+	Number        int64
+	Parent        int64
+	Status        string
+	Error         string
+	Event         string
+	Action        string
+	Link          string
+	Timestamp     int64
+	Title         string
+	Message       string
+	Before        string
+	After         string
+	Ref           string
+	Source_repo   string
+	Source        string
+	Target        string
+	Author_login  string
+	Author_name   string
+	Author_email  string
+	Author_avatar string
+	Sender        string
+	Params        map[string]string
+	Cron          string
+	Deploy_to     string
+	Deploy_id     int64
+	Started       int64
+	Finished      int64
+	Created       int64
+	Updated       int64
+	Version       int64
+}
+
+type droneRequest struct {
+	Repo  Repo
+	Build Build
+}
+
+func reqHandler(w http.ResponseWriter, r *http.Request) {
+	// Keep track of status code
+	respStatusCode := http.StatusNoContent
+	respMsg := ""
+
+	// Log request when done processing
+	defer func() {
+		log.Printf("[%d] HTTP %s %s from %s (%s)", respStatusCode, r.Method, r.RequestURI, r.RemoteAddr, respMsg)
+	}()
+
+	// Only accept POST requests
+	if r.Method != http.MethodPost {
+		respMsg = fmt.Sprintf("Rejected request due to invalid method: %s", r.Method)
+		respStatusCode = http.StatusMethodNotAllowed
+		w.WriteHeader(respStatusCode)
+		return
+	}
+
+	// Read request body
+	reqBody := []byte{}
+	_, err := r.Body.Read(reqBody)
+	if err != nil {
+		respMsg = fmt.Sprintf("Error while reading body of request: %s", err.Error())
+		respStatusCode = http.StatusInternalServerError
+		w.WriteHeader(respStatusCode)
+		return
+	}
+
+	// Try to unmarshal reqeust body
+	data := droneRequest{}
+	err = json.Unmarshal(reqBody, &data)
+	if err != nil {
+		respMsg = fmt.Sprintf("Error while unmarshalling request data: %s", err.Error())
+		respStatusCode = http.StatusBadRequest
+		w.WriteHeader(respStatusCode)
+		return
+	}
+
+	fmt.Printf("%v\n", data)
 }
 
 func main() {
