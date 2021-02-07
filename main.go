@@ -52,6 +52,8 @@ func main() {
 	// Prepare server variables
 	serverLAddr := "0.0.0.0"
 	serverLPort := "80"
+	serverTLSCert := ""
+	serverTLSKey := ""
 
 	if setting, exists := serverConfig["listen-addr"]; exists {
 		serverLAddr = setting
@@ -59,18 +61,36 @@ func main() {
 	if setting, exists := serverConfig["listen-port"]; exists {
 		serverLPort = setting
 	}
+	if settingTLSCert, exists := serverConfig["tls-cert"]; exists {
+		if settingTLSKey, exists := serverConfig["tls-key"]; exists {
+			serverTLSCert, serverTLSKey = settingTLSCert, settingTLSKey
+		}
+	}
 
 	// Set up and start the server
 	http.HandleFunc("/", reqHandler)
 
 	log.Printf("Starting HTTP listener on %s:%s", serverLAddr, serverLPort)
-	serverErr := http.ListenAndServe(
-		fmt.Sprintf("%s:%s",
-			serverLAddr,
-			serverLPort,
-		),
-		nil,
-	)
+	var serverErr error
+	if serverTLSCert == "" {
+		serverErr = http.ListenAndServe(
+			fmt.Sprintf("%s:%s",
+				serverLAddr,
+				serverLPort,
+			),
+			nil,
+		)
+	} else {
+		serverErr = http.ListenAndServeTLS(
+			fmt.Sprintf("%s:%s",
+				serverLAddr,
+				serverLPort,
+			),
+			serverTLSCert,
+			serverTLSKey,
+			nil,
+		)
+	}
 	if serverErr != nil {
 		log.Fatalf("The server failed to start because of the following error: %s", serverErr.Error())
 	} else {
