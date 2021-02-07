@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
 
 	cmdline "github.com/galdor/go-cmdline"
@@ -21,7 +22,7 @@ var (
 
 type Repo struct {
 	Id             int64
-	Uid            int64
+	Uid            string
 	User_id        int64
 	Namespace      string
 	Name           string
@@ -100,7 +101,14 @@ func reqHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Only accept POST requests
 	if r.Method != http.MethodPost {
-		respMsg = fmt.Sprintf("Rejected request due to invalid method: %s", r.Method)
+		// Unless...
+		if r.Method == "BREW" {
+			respMsg = "I am a teapot"
+			respStatusCode = http.StatusTeapot
+			w.WriteHeader(respStatusCode)
+			return
+		}
+		respMsg = fmt.Sprintf("rejected request due to invalid method: %s", r.Method)
 		respStatusCode = http.StatusMethodNotAllowed
 		w.WriteHeader(respStatusCode)
 		return
@@ -132,7 +140,57 @@ func reqHandler(w http.ResponseWriter, r *http.Request) {
 		respMsg = fmt.Sprintf("found matching config for repo %s: %s", repoName, configLocation)
 		respStatusCode = http.StatusOK
 		w.WriteHeader(respStatusCode)
-		_, _ = w.Write([]byte(configLocation))
+
+		// Parse the URL pointing at the config
+		configLocationParsed, err := url.Parse(configLocation)
+		if err != nil {
+			// URL is invalid so fallback on standard config but log the error
+			respMsg = fmt.Sprintf("unable parse URL for repo %s (%s) due to error (%s) so falling back to config in repo", repoName, configLocation, err.Error())
+			respStatusCode = http.StatusNoContent
+			w.WriteHeader(respStatusCode)
+			return
+		}
+
+		// Attempt to fetch the config from its location
+		if configLocationParsed.Scheme == "http" || configLocationParsed.Scheme == "https" {
+			resp, err := http.Get(configLocation)
+			if err != nil {
+				// We couldn't fetch the config so fall back to file in repo
+				respMsg = fmt.Sprintf("unable to retrieve file at URL for repo %s (%s) due to error (%s) so falling back to config in repo", repoName, configLocation, err.Error())
+				respStatusCode = http.StatusNoContent
+				w.WriteHeader(respStatusCode)
+				return
+			}
+			body, err := ioutil.ReadAll(resp.Body)
+			resp.Body.Close()
+			if err != nil {
+				// We couldn't fetch the config so fall back to file in repo
+				respMsg = fmt.Sprintf("unable to retrieve file at URL for repo %s (%s) due to error (%s) so falling back to config in repo", repoName, configLocation, err.Error())
+				respStatusCode = http.StatusNoContent
+				w.WriteHeader(respStatusCode)
+				return
+			}
+
+			// TODO: Handle error
+			_, _ = w.Write(body)
+		} else if configLocationParsed.Scheme == "file" {
+			data, err := ioutil.ReadFile(configLocationParsed.Path)
+			if err != nil {
+				// We couldn't fetch the config so fall back to file in repo
+				respMsg = fmt.Sprintf("unable to retrieve file at URL for repo %s (%s) due to error (%s) so falling back to config in repo", repoName, configLocation, err.Error())
+				respStatusCode = http.StatusNoContent
+				w.WriteHeader(respStatusCode)
+				return
+			}
+			// TODO: Handle error
+			_, _ = w.Write(data)
+		} else {
+			// The scheme is unsupported so fallback
+			respMsg = fmt.Sprintf("the URL scheme for repo %s (%s) in unsupported so falling back to config in repo", repoName, configLocationParsed.Scheme)
+			respStatusCode = http.StatusNoContent
+			w.WriteHeader(respStatusCode)
+			return
+		}
 	} else {
 		// Otherwise, return a 204 to fallback to a local config for the repo
 		respMsg = fmt.Sprintf("no matching config found for repo %s", repoName)
