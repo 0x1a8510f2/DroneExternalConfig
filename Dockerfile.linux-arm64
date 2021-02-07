@@ -5,4 +5,4 @@ COPY build/linux-arm64/* /usr/bin/
 VOLUME /config
 WORKDIR /config
 
-ENTRYPOINT ["/usr/bin/DroneExternalConfig"]
+ENTRYPOINT ["/usr/bin/DroneExternalConfig", "--conf", "/config/config.ini"]
