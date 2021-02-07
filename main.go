@@ -109,20 +109,34 @@ func reqHandler(w http.ResponseWriter, r *http.Request) {
 	// Read request body
 	reqBody, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		respMsg = fmt.Sprintf("Error while reading body of request: %s", err.Error())
+		respMsg = fmt.Sprintf("error while reading body of request: %s", err.Error())
 		respStatusCode = http.StatusInternalServerError
 		w.WriteHeader(respStatusCode)
 		return
 	}
 
-	fmt.Printf("%s\n", reqBody)
-
-	// Try to unmarshal reqeust body
+	// Try to unmarshal request body
 	data := droneRequest{}
 	err = json.Unmarshal(reqBody, &data)
 	if err != nil {
-		respMsg = fmt.Sprintf("Error while unmarshalling request data: %s", err.Error())
+		respMsg = fmt.Sprintf("error while unmarshalling request data: %s", err.Error())
 		respStatusCode = http.StatusBadRequest
+		w.WriteHeader(respStatusCode)
+		return
+	}
+
+	// Get the full name of the repo and check against our map
+	repoName := data.Repo.Slug
+	if configLocation, exists := config["config-map"][repoName]; exists {
+		// If a mapping exists, respond with the config at the location the mapping points at
+		respMsg = fmt.Sprintf("found matching config for repo %s: %s", repoName, configLocation)
+		respStatusCode = http.StatusOK
+		w.WriteHeader(respStatusCode)
+		_, _ = w.Write([]byte(configLocation))
+	} else {
+		// Otherwise, return a 204 to fallback to a local config for the repo
+		respMsg = fmt.Sprintf("no matching config found for repo %s", repoName)
+		respStatusCode = http.StatusNoContent
 		w.WriteHeader(respStatusCode)
 		return
 	}
