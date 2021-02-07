@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -106,8 +107,7 @@ func reqHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Read request body
-	reqBody := []byte{}
-	_, err := r.Body.Read(reqBody)
+	reqBody, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		respMsg = fmt.Sprintf("Error while reading body of request: %s", err.Error())
 		respStatusCode = http.StatusInternalServerError
