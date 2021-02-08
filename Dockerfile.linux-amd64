@@ -1,8 +1,9 @@
 FROM alpine:latest
 
-COPY build/linux-amd64/* /usr/bin/
-
 VOLUME /conf
 WORKDIR /conf
+
+COPY build/linux-amd64/* /usr/bin/
+COPY example-config.ini /conf/example-config.ini
 
 ENTRYPOINT ["/usr/bin/DroneExternalConfig", "--conf", "/conf/config.ini"]
