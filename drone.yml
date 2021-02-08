@@ -3,14 +3,14 @@ type: docker
 name: default
 
 steps:
-- name: build binaries
+- name: binaries
   image: docker.io/golang:1.15-alpine
   commands:
     - mkdir -p build/linux-amd64 build/linux-arm64
     - GOOS=linux GOARCH=amd64 go build -v -o build/linux-amd64 .
     - GOOS=linux GOARCH=arm64 go build -v -o build/linux-arm64 .
 
-- name: build and push amd64 docker image
+- name: amd64 image
   image: plugins/docker:linux-amd64
   settings:
     username:
@@ -20,11 +20,11 @@ steps:
     dockerfile: ./Dockerfile.linux-arm64
     repo: trslimey/drone-external-config
     tags:
-      - amd64
+      - linux-amd64
   depends_on:
     - build binaries
 
-#- name: build and push arm64 docker image
+#- name: arm64 image
 #  image: plugins/docker:linux-arm64
 #  settings:
 #    username:
@@ -34,6 +34,19 @@ steps:
 #    dockerfile: ./Dockerfile.linux-arm64
 #    repo: trslimey/drone-external-config
 #    tags:
-#      - arm64
+#      - linux-arm64
 #  depends_on:
 #    - build binaries
+
+- name: docker manifest
+  image: plugins/manifest
+  settings:
+    username:
+      from_secret: DOCKER_USER
+    password:
+      from_secret: DOCKER_TOKEN
+    target: trslimey/drone-external-config:latest
+    template: trslimey/drone-external-config:OS-ARCH
+    platforms:
+      - linux/amd64
+      - linux/arm64
