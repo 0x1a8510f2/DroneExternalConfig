@@ -158,8 +158,9 @@ func reqHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// Attempt to fetch the config from its location
+		response := []byte{}
 		if configLocationParsed.Scheme == "http" || configLocationParsed.Scheme == "https" {
-			resp, err := http.Get(configLocation)
+			result, err := http.Get(configLocation)
 			if err != nil {
 				// We couldn't fetch the config so fall back to file in repo
 				respMsg = fmt.Sprintf("unable to retrieve file at URL for repo %s (%s) due to error (%s) so falling back to config in repo", repoName, configLocation, err.Error())
@@ -167,8 +168,8 @@ func reqHandler(w http.ResponseWriter, r *http.Request) {
 				w.WriteHeader(respStatusCode)
 				return
 			}
-			body, err := ioutil.ReadAll(resp.Body)
-			resp.Body.Close()
+			body, err := ioutil.ReadAll(result.Body)
+			result.Body.Close()
 			if err != nil {
 				// We couldn't fetch the config so fall back to file in repo
 				respMsg = fmt.Sprintf("unable to retrieve file at URL for repo %s (%s) due to error (%s) so falling back to config in repo", repoName, configLocation, err.Error())
@@ -176,9 +177,7 @@ func reqHandler(w http.ResponseWriter, r *http.Request) {
 				w.WriteHeader(respStatusCode)
 				return
 			}
-
-			// TODO: Handle error
-			_, _ = w.Write(body)
+			response = body
 		} else if configLocationParsed.Scheme == "file" {
 			data, err := ioutil.ReadFile(configLocationParsed.Path)
 			if err != nil {
@@ -188,14 +187,22 @@ func reqHandler(w http.ResponseWriter, r *http.Request) {
 				w.WriteHeader(respStatusCode)
 				return
 			}
-			// TODO: Handle error
-			_, _ = w.Write(data)
+			response = data
 		} else {
 			// The scheme is unsupported so fallback
 			respMsg = fmt.Sprintf("the URL scheme for repo %s (%s) in unsupported so falling back to config in repo", repoName, configLocationParsed.Scheme)
 			respStatusCode = http.StatusNoContent
 			w.WriteHeader(respStatusCode)
 			return
+		}
+		// Return the resulting config to requester
+		respStatusCode = http.StatusOK
+		w.WriteHeader(respStatusCode)
+		_, err = w.Write(response)
+		if err != nil {
+			respMsg = fmt.Sprintf("failed to send config back to requester due to error (%s)", err.Error())
+		} else {
+			respMsg = fmt.Sprintf("successfully sent config for repo %s (%s)", repoName, configLocation)
 		}
 	} else {
 		// Otherwise, return a 204 to fallback to a local config for the repo
