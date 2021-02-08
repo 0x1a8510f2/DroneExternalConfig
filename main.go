@@ -1,3 +1,9 @@
+/* Copyright (C) 2021 TR_SLimey - All Rights Reserved
+ * You may use, distribute and modify this code under the
+ * terms of the Apache 2.0 license, which can be found in
+ * the LICENSE file.
+ */
+
 package main
 
 import (
@@ -90,7 +96,7 @@ type droneRequest struct {
 }
 
 func reqHandler(w http.ResponseWriter, r *http.Request) {
-	// Keep track of status code
+	// Keep track of status code and log message
 	respStatusCode := http.StatusNoContent
 	respMsg := ""
 
