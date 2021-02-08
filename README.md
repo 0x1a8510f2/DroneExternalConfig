@@ -33,4 +33,5 @@ The config file follows the `ini` format, and has two sections: `[server]` and `
   - `config_url/uri` - the location of the config file (`http://`, `https://` or `file://`); for example, `https://example.com/configs/repo/project/drone.yml`
 
 Example: `TR-SLimey/DroneExternalConfig=https://example.com/build-configs/TR-SLimey/DroneExternalConfig/drone.yml`
+
 Note: The config files are fetched by DroneExternalConfig not Drone
