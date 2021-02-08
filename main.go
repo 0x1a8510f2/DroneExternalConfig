@@ -215,6 +215,7 @@ func reqHandler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	// Handle command line options/arguments (-h/--help is implicit)
+	// TODO: Allow overriding config within commandline
 	cl := cmdline.New()
 	cl.AddOption("c", "conf", "file", "path to the config file")
 	cl.SetOptionDefault("conf", "/etc/DroneExternalConfig/config.ini")
