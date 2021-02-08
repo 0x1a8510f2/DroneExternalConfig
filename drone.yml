@@ -1,6 +1,6 @@
 kind: pipeline
 type: docker
-name: default
+name: devel
 
 steps:
 - name: binaries
@@ -20,7 +20,7 @@ steps:
     dockerfile: ./Dockerfile.linux-arm64
     repo: trslimey/drone-external-config
     tags:
-      - linux-amd64
+      - linux-amd64-dev
   depends_on:
     - binaries
 
@@ -34,11 +34,36 @@ steps:
 #    dockerfile: ./Dockerfile.linux-arm64
 #    repo: trslimey/drone-external-config
 #    tags:
-#      - linux-arm64
+#      - linux-arm64-dev
 #  depends_on:
 #    - binaries
 
-- name: docker manifest
+- name: devel docker manifest
+  image: plugins/manifest
+  settings:
+    username:
+      from_secret: DOCKER_USER
+    password:
+      from_secret: DOCKER_TOKEN
+    target: trslimey/drone-external-config:latest-dev
+    template: trslimey/drone-external-config:OS-ARCH-dev
+    platforms:
+      - linux/amd64
+      - linux/arm64
+    ignore_missing: true
+  depends_on:
+    - amd64 image
+
+trigger:
+  event:
+  - push
+
+---
+kind: pipeline
+type: docker
+name: prod
+
+- name: prod docker manifest
   image: plugins/manifest
   settings:
     username:
@@ -46,7 +71,7 @@ steps:
     password:
       from_secret: DOCKER_TOKEN
     target: trslimey/drone-external-config:latest
-    template: trslimey/drone-external-config:OS-ARCH
+    template: trslimey/drone-external-config:OS-ARCH-dev
     platforms:
       - linux/amd64
       - linux/arm64
