@@ -158,7 +158,7 @@ func reqHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// Attempt to fetch the config from its location
-		response := []byte{}
+		var response []byte
 		if configLocationParsed.Scheme == "http" || configLocationParsed.Scheme == "https" {
 			result, err := http.Get(configLocation)
 			if err != nil {
