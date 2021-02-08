@@ -50,6 +50,6 @@ steps:
     platforms:
       - linux/amd64
       - linux/arm64
-  ignore_missing: true
+    ignore_missing: true
   depends_on:
     - amd64 image
