@@ -1,7 +1,7 @@
 # DroneExternalConfig
 [![Build Status](https://he.an-atom-in.space/api/badges/trslimey/DroneExternalConfig/status.svg)](https://he.an-atom-in.space/trslimey/DroneExternalConfig)
 
-An extremely simple Drone CI (drone.io) configuration extension to allow fetching of build configs from various locations depending on the repository being built.
+An extremely simple Drone CI (drone.io) configuration extension to allow fetching of build configs from various locations outside of the repository, depending on the repository being built.
 
 ## Usage and configuration
 DroneExternalConfig is primarily used as a [Docker container](https://hub.docker.com/r/trslimey/drone-external-config).
