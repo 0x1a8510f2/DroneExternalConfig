@@ -20,7 +20,7 @@ steps:
     dockerfile: ./Dockerfile.linux-arm64
     repo: trslimey/drone-external-config
     tags:
-      - linux-amd64-dev
+      - linux-amd64-devel
   depends_on:
     - binaries
 
@@ -34,7 +34,7 @@ steps:
 #    dockerfile: ./Dockerfile.linux-arm64
 #    repo: trslimey/drone-external-config
 #    tags:
-#      - linux-arm64-dev
+#      - linux-arm64-devel
 #  depends_on:
 #    - binaries
 
@@ -45,8 +45,8 @@ steps:
       from_secret: DOCKER_USER
     password:
       from_secret: DOCKER_TOKEN
-    target: trslimey/drone-external-config:latest-dev
-    template: trslimey/drone-external-config:OS-ARCH-dev
+    target: trslimey/drone-external-config:latest-devel
+    template: trslimey/drone-external-config:OS-ARCH-devel
     platforms:
       - linux/amd64
       - linux/arm64
@@ -72,7 +72,7 @@ steps:
     password:
       from_secret: DOCKER_TOKEN
     target: trslimey/drone-external-config:latest
-    template: trslimey/drone-external-config:OS-ARCH-dev
+    template: trslimey/drone-external-config:OS-ARCH-devel
     platforms:
       - linux/amd64
       - linux/arm64
@@ -82,4 +82,4 @@ trigger:
   event:
   - promote
   target:
-  - production
+  - prod
