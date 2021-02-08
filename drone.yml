@@ -7,8 +7,8 @@ steps:
   image: docker.io/golang:1.15-alpine
   commands:
     - mkdir -p build/linux-amd64 build/linux-arm64
-    - GOOS=linux GOARCH=amd64 go build -v -o build/linux-amd64 .
-    - GOOS=linux GOARCH=arm64 go build -v -o build/linux-arm64 .
+    - GOOS=linux GOARCH=amd64 go build -v -trimpath -o build/linux-amd64 .
+    - GOOS=linux GOARCH=arm64 go build -v -trimpath -o build/linux-arm64 .
 
 - name: amd64 image
   image: plugins/docker:linux-amd64
@@ -57,6 +57,8 @@ steps:
 trigger:
   event:
   - push
+  branch:
+  - master
 
 ---
 kind: pipeline
