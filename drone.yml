@@ -63,6 +63,9 @@ kind: pipeline
 type: docker
 name: prod
 
+clone:
+  disable: true
+
 steps:
 - name: prod docker manifest
   image: plugins/manifest
