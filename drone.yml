@@ -22,7 +22,7 @@ steps:
     tags:
       - linux-amd64
   depends_on:
-    - build binaries
+    - binaries
 
 #- name: arm64 image
 #  image: plugins/docker:linux-arm64
@@ -36,7 +36,7 @@ steps:
 #    tags:
 #      - linux-arm64
 #  depends_on:
-#    - build binaries
+#    - binaries
 
 - name: docker manifest
   image: plugins/manifest
@@ -50,3 +50,6 @@ steps:
     platforms:
       - linux/amd64
       - linux/arm64
+  ignore_missing: true
+  depends_on:
+    - amd64 image
