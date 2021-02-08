@@ -6,7 +6,7 @@ steps:
 - name: binaries
   image: docker.io/golang:1.15-alpine
   commands:
-    - apk add --no-cache gcc
+    - apk add --no-cache build-base
     - GOOS=linux GOARCH=amd64 go build -v -trimpath -o build/linux-amd64 .
     - GOOS=linux GOARCH=arm64 go build -v -trimpath -o build/linux-arm64 .
 
