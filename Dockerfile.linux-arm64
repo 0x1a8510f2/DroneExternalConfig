@@ -3,7 +3,7 @@ FROM alpine:latest
 VOLUME /conf
 WORKDIR /conf
 
-COPY build/linux-arm64 /usr/bin/
+COPY build/linux-arm64 /usr/bin/DroneExternalConfig
 COPY example-config.ini /conf/example-config.ini
 
 ENTRYPOINT ["/usr/bin/DroneExternalConfig", "--conf", "/conf/config.ini"]
