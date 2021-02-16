@@ -194,7 +194,7 @@ func reqHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		// Wrap the config in JSON
 		log.Printf("%v", response)
-		responseDict := map[string][]byte{"data": response}
+		responseDict := map[string]string{"data": string(response)}
 		log.Printf("%v", responseDict)
 		finaldata, err := json.Marshal(responseDict)
 		if err != nil {
