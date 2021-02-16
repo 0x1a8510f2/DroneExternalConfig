@@ -24,19 +24,22 @@ steps:
   depends_on:
     - binaries
 
-#- name: arm64 image
-#  image: plugins/docker:linux-arm64
-#  settings:
-#    username:
-#      from_secret: DOCKER_USER
-#    password:
-#      from_secret: DOCKER_TOKEN
-#    dockerfile: ./Dockerfile.linux-arm64
-#    repo: trslimey/drone-external-config
-#    tags:
-#      - linux-arm64-devel
-#  depends_on:
-#    - binaries
+- name: arm64 image
+  image: plugins/docker:linux-arm64
+  settings:
+    username:
+      from_secret: DOCKER_USER
+    password:
+      from_secret: DOCKER_TOKEN
+    dockerfile: ./Dockerfile.linux-arm64
+    repo: trslimey/drone-external-config
+    tags:
+      - linux-arm64-devel
+  depends_on:
+    - binaries
+  commands:
+    # Debugging breakpoint
+    - sleep 999999
 
 - name: devel docker manifest
   image: plugins/manifest
