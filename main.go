@@ -208,6 +208,8 @@ func reqHandler(w http.ResponseWriter, r *http.Request) {
 		respStatusCode = http.StatusOK
 		w.WriteHeader(respStatusCode)
 		_, err = w.Write(data)
+		// DEBUG
+		log.Printf("%s", data)
 		if err != nil {
 			respMsg = fmt.Sprintf("failed to send config back to requester due to error (%s)", err.Error())
 		} else {
