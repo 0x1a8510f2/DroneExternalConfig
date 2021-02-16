@@ -195,9 +195,6 @@ func reqHandler(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(respStatusCode)
 			return
 		}
-		// Return the resulting config to requester
-		respStatusCode = http.StatusOK
-		w.WriteHeader(respStatusCode)
 		// Wrap the config in JSON
 		responseDict := map[string][]byte{"data": response}
 		data, err := json.Marshal(responseDict)
@@ -207,7 +204,9 @@ func reqHandler(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(respStatusCode)
 			return
 		}
-		// And send it off
+		// Return the resulting config to requester
+		respStatusCode = http.StatusOK
+		w.WriteHeader(respStatusCode)
 		_, err = w.Write(data)
 		if err != nil {
 			respMsg = fmt.Sprintf("failed to send config back to requester due to error (%s)", err.Error())
