@@ -10,7 +10,7 @@ The container can be started like so:
 ```
 docker run \
   -d \
-  -p 8080:80 \
+  -p 8080:8080 \
   --restart always \
   -v drone-external-config:/conf \
   --name drone-external-config \
