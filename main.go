@@ -19,7 +19,7 @@ import (
 	ini "github.com/vaughan0/go-ini"
 )
 
-const VERSION = "1.0.0"
+const VERSION = "1.0.1"
 
 var (
 	config   ini.File
