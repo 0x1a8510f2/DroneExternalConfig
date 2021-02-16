@@ -142,11 +142,6 @@ func reqHandler(w http.ResponseWriter, r *http.Request) {
 	// Get the full name of the repo and check against our map
 	repoName := data.Repo.Slug
 	if configLocation, exists := config["config-map"][repoName]; exists {
-		// If a mapping exists, respond with the config at the location the mapping points at
-		respMsg = fmt.Sprintf("found matching config for repo %s: %s", repoName, configLocation)
-		respStatusCode = http.StatusOK
-		w.WriteHeader(respStatusCode)
-
 		// Parse the URL pointing at the config
 		configLocationParsed, err := url.Parse(configLocation)
 		if err != nil {
