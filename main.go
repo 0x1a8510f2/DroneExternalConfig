@@ -177,6 +177,8 @@ func reqHandler(w http.ResponseWriter, r *http.Request) {
 				w.WriteHeader(respStatusCode)
 				return
 			}
+			log.Printf("%v", body)
+			log.Printf("%s", body)
 			response = body
 		} else if configLocationParsed.Scheme == "file" {
 			data, err := ioutil.ReadFile(configLocationParsed.Path)
@@ -196,8 +198,10 @@ func reqHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		// Wrap the config in JSON
+		log.Printf("%v", response)
 		responseDict := map[string][]byte{"data": response}
-		data, err := json.Marshal(responseDict)
+		log.Printf("%v", responseDict)
+		finaldata, err := json.Marshal(responseDict)
 		if err != nil {
 			respMsg = fmt.Sprintf("failed to wrap config in JSON due to error (%s)", err.Error())
 			respStatusCode = http.StatusInternalServerError
@@ -207,9 +211,9 @@ func reqHandler(w http.ResponseWriter, r *http.Request) {
 		// Return the resulting config to requester
 		respStatusCode = http.StatusOK
 		w.WriteHeader(respStatusCode)
-		_, err = w.Write(data)
+		_, err = w.Write(finaldata)
 		// DEBUG
-		log.Printf("%s", data)
+		log.Printf("%s", finaldata)
 		if err != nil {
 			respMsg = fmt.Sprintf("failed to send config back to requester due to error (%s)", err.Error())
 		} else {
