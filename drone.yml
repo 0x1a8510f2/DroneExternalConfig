@@ -17,7 +17,7 @@ steps:
       from_secret: DOCKER_USER
     password:
       from_secret: DOCKER_TOKEN
-    dockerfile: ./Dockerfile.linux-arm64
+    dockerfile: ./Dockerfile.linux-amd64
     repo: trslimey/drone-external-config
     tags:
       - linux-amd64-devel
