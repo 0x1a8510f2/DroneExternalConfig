@@ -198,7 +198,17 @@ func reqHandler(w http.ResponseWriter, r *http.Request) {
 		// Return the resulting config to requester
 		respStatusCode = http.StatusOK
 		w.WriteHeader(respStatusCode)
-		_, err = w.Write(response)
+		// Wrap the config in JSON
+		responseDict := map[string][]byte{"data": response}
+		data, err := json.Marshal(responseDict)
+		if err != nil {
+			respMsg = fmt.Sprintf("failed to wrap config in JSON due to error (%s)", err.Error())
+			respStatusCode = http.StatusInternalServerError
+			w.WriteHeader(respStatusCode)
+			return
+		}
+		// And send it off
+		_, err = w.Write(data)
 		if err != nil {
 			respMsg = fmt.Sprintf("failed to send config back to requester due to error (%s)", err.Error())
 		} else {
