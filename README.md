@@ -1,5 +1,5 @@
 # DroneExternalConfig
-[![Build Status](https://he.an-atom-in.space/api/badges/trslimey/DroneExternalConfig/status.svg)](https://he.an-atom-in.space/trslimey/DroneExternalConfig)
+[![Build Status](https://ci.0x1a8510f2.space/api/badges/0x1a8510f2/DroneExternalConfig/status.svg)](https://ci.0x1a8510f2.space/0x1a8510f2/DroneExternalConfig)
 
 An extremely simple Drone CI (drone.io) configuration extension to allow fetching of build configs from various locations outside of the repository, depending on the repository being built.
 
