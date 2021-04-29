@@ -29,9 +29,9 @@ The config file follows the `ini` format, and has two sections: `[server]` and `
 \* Only if both of these options are enabled will the server use HTTPS. The port will remain as set (or default to 8080) so you may want to change the port to `443` or `8443`.
 
 - `[config-map]` - A mapping of repositories to configuration files, represented as `<repo_name>`=`<config_url/uri>` where:
-  - `repo_name` - the name of the repository including the author; for example, `TR-SLimey/DroneExternalConfig`
+  - `repo_name` - the name of the repository including the author; for example, `0x1a8510f2/DroneExternalConfig`
   - `config_url/uri` - the location of the config file (`http://`, `https://` or `file://`); for example, `https://example.com/configs/repo/project/drone.yml`
 
-Example: `TR-SLimey/DroneExternalConfig=https://example.com/build-configs/TR-SLimey/DroneExternalConfig/drone.yml`
+Example: `0x1a8510f2/DroneExternalConfig=https://example.com/build-configs/0x1a8510f2/DroneExternalConfig/drone.yml`
 
 Note: The config files are fetched by DroneExternalConfig not Drone
